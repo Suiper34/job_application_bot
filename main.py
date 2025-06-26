@@ -1,4 +1,5 @@
 import os
+from time import sleep
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -43,5 +44,26 @@ if easy_apply.get_attribute('aria-checked') != 'true':
     easy_apply.click()
 
 
-job_results = job_driver.find_elements(
-    By.CSS_SELECTOR, 'a.job-card-list__title')
+apply_filter = WebDriverWait(job_driver, 2).until(
+    expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, '.artdeco-modal-overlay.search-reusables__side-panel-overlay button[aria-label ="Apply current filters to show results"]')))
+
+
+job_results = WebDriverWait(job_driver, 5).until(expected_conditions.element_to_be_clickable((
+    By.CSS_SELECTOR, 'a.job-card-list__title')))
+
+for job in job_results:
+    job.click()
+
+    apply_job = WebDriverWait(job_driver, 4).until(
+        expected_conditions.element_to_be_clickable((By.ID, 'jobs-apply-button-id')))
+    apply_job.click()
+
+    enter_number = WebDriverWait(job_driver, 15).until(expected_conditions.presence_of_element_located(
+        (By.ID, 'single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4254357231-14023255337-phoneNumber-nationalNumber')))
+    enter_number.send_keys(os.environ.get('number'))
+
+    sleep(1)
+
+    next_1 = job_driver.find_element(
+        By.CSS_SELECTOR, '.jobs-easy-apply-modal__content button[aria-label="Continue to next step"]')
+    next_1 = next_1.click()
