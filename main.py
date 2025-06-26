@@ -23,7 +23,7 @@ password = WebDriverWait(job_driver, 30).until(
 password.send_keys(os.environ.get('password'), Keys.ENTER)
 
 search_job = WebDriverWait(job_driver, 20).until(
-    expected_conditions.presence_of_element_located((By.CSS_SELECTOR, 'input[aria-label="Search by title"]')))
+    expected_conditions.presence_of_element_located((By.CSS_SELECTOR, 'input[aria-label="Search by title, skill, or company"]')))
 search_job.send_keys('Python Developer', Keys.ENTER)
 
 
@@ -36,7 +36,8 @@ filter_select.click()
 
 easy_apply = WebDriverWait(job_driver, 5).until(
     expected_conditions.presence_of_element_located(
-        (By.XPATH, '//*[@id="adToggle_ember590"]'))
+        (By.XPATH, "//li[contains(@class, 'search-reusables__secondary-filters-filter')][.//h3[contains(text(), 'Easy Apply')]]//input[@type='checkbox' and contains(@class, 'artdeco-toggle__button')]")
+    )
 )
 if easy_apply.get_attribute('aria-checked') != 'true':
     easy_apply.click()
