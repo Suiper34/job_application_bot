@@ -47,9 +47,9 @@ if easy_apply.get_attribute('aria-checked') != 'true':
 apply_filter = WebDriverWait(job_driver, 2).until(
     expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, '.artdeco-modal-overlay.search-reusables__side-panel-overlay button[aria-label ="Apply current filters to show results"]')))
 
-
-job_results = WebDriverWait(job_driver, 5).until(expected_conditions.element_to_be_clickable((
-    By.CSS_SELECTOR, 'a.job-card-list__title')))
+sleep(5)
+job_results = job_driver.find_elements(
+    By.CSS_SELECTOR, 'a.job-card-list__title')
 
 for job in job_results:
     job.click()
@@ -64,6 +64,23 @@ for job in job_results:
 
     sleep(1)
 
-    next_1 = job_driver.find_element(
-        By.CSS_SELECTOR, '.jobs-easy-apply-modal__content button[aria-label="Continue to next step"]')
-    next_1 = next_1.click()
+    next_button = job_driver.find_element(
+        By.CSS_SELECTOR, '.jobs-easy-apply-modal__content button[aria-label="Continue to next step"]'
+    )
+    next_button.click()
+
+    the_button = job_driver.find_element(
+        By.CSS_SELECTOR, '.jobs-easy-apply-modal__content button')
+    if the_button.get_attribute('aria-label') == 'Continue to next step':
+        sleep(5)
+        next_button.click()
+
+    elif the_button.get_attribute('aria-label') == 'Review your application':
+        review_button = WebDriverWait(job_driver, 5).until(expected_conditions.element_to_be_clickable(
+            (By.CSS_SELECTOR, '.jobs-easy-apply-modal__content button[aria-label = "Review your application"]')))
+        review_button.click()
+    else:
+        sleep(10)
+        submit_button = job_driver.find_element(
+            By.CSS_SELECTOR, '.jobs-easy-apply-modal__content button[aria-label = "Submit application"]')
+        submit_button.click()
